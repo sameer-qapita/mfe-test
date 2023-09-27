@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vanilla HTML Page</title>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!-- Importing React and ReactDOM -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+    <!-- Import the Module Federation entry script -->
+    <!-- <script src="http://localhost:4003/remoteEntry.js"></script> -->
+
+    <!-- Use the React component -->
+    <script>
+      const script = document.createElement("script");
+      script.src = "http://localhost:4003/remoteEntry.js";
+      script.onload = init; // Once loaded, initialize your app
+      document.head.appendChild(script);
+
+      async function init() {
+        const module = await import(
+          "http://localhost:4003/openmarket/Openmarket"
+        );
+        const Comp = module.default;
+        ReactDOM.render(
+          React.createElement(Comp, {
+            /* props here */
+          }),
+          document.getElementById("app")
+        );
+      }
+      init();
+    </script>
+  </body>
+</html>

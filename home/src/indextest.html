@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>home</title>
+  </head>
+
+  <body>
+    <!-- React dependencies -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+    <script src="http://localhost:4003/remoteEntry.js"></script>
+
+    <div id="app"></div>
+    <div id="webflow-root"></div>
+
+    <div id="remote-container"></div>
+
+    <script>
+      const container = document.getElementById("remote-container");
+      const remoteModule = window["openmarket"]; // Replace with the actual module name
+      debugger;
+
+      function loadComponent(scope, module) {
+        return async () => {
+          // Initializes the share scope. This fills it with known provided modules from this build and all remotes
+          await __webpack_init_sharing__("default");
+          const container = window[scope]; // or get the container somewhere else
+          // Initialize the container, it may provide shared modules
+          await container.init(__webpack_share_scopes__.default);
+          const factory = await window[scope].get(module);
+          const Module = factory();
+          return Module;
+        };
+      }
+
+      container.innerHTML = "<h2>Loading...</h2>"; // Display a loading message while the module loads
+      // const Comp = React.lazy(loadComponent("openmarket", "./Openmarket"));
+      // componentCache.set(key, Comp);
+      // setComponent(Comp);
+
+      try {
+        //const module = remoteModule.init(); // Assuming init() returns the module directly
+        // Now you can use the module
+        ReactDOM.render(
+          React.createElement(loadComponent("openmarket", "./Openmarket")),
+          container
+        );
+      } catch (error) {
+        console.error("Error loading remote module:", error);
+      }
+    </script>
+  </body>
+</html>
